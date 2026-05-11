@@ -89,3 +89,14 @@ nav {
 .quick-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
 
 .restricted { color: #888; font-style: italic; }
+
+/* Role badges */
+.role-badge { padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+.role-admin { background: #fce4ec; color: #c62828; }
+.role-doctor { background: #e3f2fd; color: #1565c0; }
+.role-secretariat { background: #e8f5e9; color: #2e7d32; }
+.role-patient { background: #f3e5f5; color: #6a1b9a; }
+
+/* Status badges */
+.status-active { color: #2e7d32; font-weight: 600; }
+.status-locked { color: #c62828; font-weight: 600; }

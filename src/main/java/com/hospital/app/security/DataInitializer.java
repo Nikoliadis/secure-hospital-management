@@ -63,7 +63,6 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void createDoctorsAndPatients() {
-        // Extra sample patients (no linked user account)
         Patient p2 = new Patient();
         p2.setFirstName("Maria"); p2.setLastName("Georgiou");
         p2.setAmka("02020290002"); p2.setDateOfBirth(LocalDate.of(1990, 2, 2));

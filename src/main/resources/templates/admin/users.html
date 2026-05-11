@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav th:replace="~{layout :: nav}"></nav>
+<div class="container">
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <div class="page-header">
+        <h1>User Management</h1>
+        <a th:href="@{/admin/users/new}" class="btn-primary">+ New User</a>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Failed Logins</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.username}"></td>
+                <td th:text="${user.email}"></td>
+                <td>
+                    <span class="role-badge" th:classappend="${'role-' + user.role.name().toLowerCase()}"
+                          th:text="${user.role}"></span>
+                </td>
+                <td>
+                    <span th:if="${user.accountNonLocked}" class="status-active">Active</span>
+                    <span th:unless="${user.accountNonLocked}" class="status-locked">Locked</span>
+                </td>
+                <td th:text="${user.failedLoginAttempts}"></td>
+                <td th:text="${user.createdAt != null ? #temporals.format(user.createdAt,'dd/MM/yyyy') : '-'}"></td>
+                <td>
+                    <form th:action="@{/admin/users/{id}/toggle-lock(id=${user.id})}" method="post" style="display:inline">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit" class="btn-sm"
+                                th:text="${user.accountNonLocked ? 'Lock' : 'Unlock'}">
+                        </button>
+                    </form>
+                    <form th:action="@{/admin/users/{id}/delete(id=${user.id})}" method="post" style="display:inline"
+                          onsubmit="return confirm('Delete this user?')">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit" class="btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -14,6 +14,7 @@
         <a th:href="@{/patients}" sec:authorize="hasAnyRole('ADMIN','SECRETARIAT')">Patients</a>
         <a th:href="@{/doctors}" sec:authorize="hasAnyRole('ADMIN','SECRETARIAT')">Doctors</a>
         <a th:href="@{/visits}">Visits</a>
+        <a th:href="@{/admin/users}" sec:authorize="hasRole('ADMIN')">Users</a>
         <a th:href="@{/profile}">Profile</a>
         &nbsp;|&nbsp; <span sec:authentication="name"></span>
         <form th:action="@{/logout}" method="post" style="display:inline">

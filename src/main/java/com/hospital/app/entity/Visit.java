@@ -36,7 +36,6 @@ public class Visit {
     @Column(nullable = false, length = 500)
     private String reason;
 
-    // Stored AES-encrypted in the database
     @Column(columnDefinition = "TEXT")
     private String diagnosisEncrypted;
 
