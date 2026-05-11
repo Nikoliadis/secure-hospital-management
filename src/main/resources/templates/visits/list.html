@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Visits</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav th:replace="~{layout :: nav}"></nav>
+<div class="container">
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+    <div class="page-header">
+        <h1>Patient Visits</h1>
+        <a th:href="@{/visits/new}" sec:authorize="hasAnyRole('ADMIN','DOCTOR')" class="btn-primary">+ New Visit</a>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Reason</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="visit : ${visits}">
+                <td th:text="${#temporals.format(visit.visitDate,'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${visit.patient.firstName + ' ' + visit.patient.lastName}"></td>
+                <td th:text="${'Dr. ' + visit.doctor.firstName + ' ' + visit.doctor.lastName}"></td>
+                <td th:text="${visit.reason}"></td>
+                <td>
+                    <a th:href="@{/visits/{id}(id=${visit.id})}" class="btn-sm">View</a>
+                    <a th:href="@{/visits/{id}/edit(id=${visit.id})}"
+                       sec:authorize="hasAnyRole('ADMIN','DOCTOR')" class="btn-sm">Edit</a>
+                </td>
+            </tr>
+            <tr th:if="${visits == null or visits.empty}">
+                <td colspan="5" style="text-align:center">No visits found</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

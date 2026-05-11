@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Patient Details</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav th:replace="~{layout :: nav}"></nav>
+<div class="container">
+    <div class="page-header">
+        <h1 th:text="${patient.firstName + ' ' + patient.lastName}">Patient</h1>
+        <a th:href="@{/patients/{id}/edit(id=${patient.id})}" class="btn-primary">Edit</a>
+    </div>
+    <table class="detail-table">
+        <tr><th>AMKA</th><td th:text="${patient.amka}"></td></tr>
+        <tr><th>Date of Birth</th><td th:text="${#temporals.format(patient.dateOfBirth,'dd/MM/yyyy')}"></td></tr>
+        <tr><th>Phone</th><td th:text="${patient.phone}"></td></tr>
+        <tr><th>Email</th><td th:text="${patient.email}"></td></tr>
+    </table>
+
+    <h2>Visit History</h2>
+    <table class="data-table" th:if="${patient.visits != null and not patient.visits.empty}">
+        <thead>
+            <tr><th>Date</th><th>Doctor</th><th>Reason</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+            <tr th:each="visit : ${patient.visits}">
+                <td th:text="${#temporals.format(visit.visitDate,'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${visit.doctor.firstName + ' ' + visit.doctor.lastName}"></td>
+                <td th:text="${visit.reason}"></td>
+                <td><a th:href="@{/visits/{id}(id=${visit.id})}" class="btn-sm">View</a></td>
+            </tr>
+        </tbody>
+    </table>
+    <p th:if="${patient.visits == null or patient.visits.empty}">No visits recorded.</p>
+
+    <a th:href="@{/patients}" class="btn-secondary">Back</a>
+</div>
+</body>
+</html>

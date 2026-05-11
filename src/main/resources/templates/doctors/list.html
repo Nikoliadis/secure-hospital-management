@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctors</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav th:replace="~{layout :: nav}"></nav>
+<div class="container">
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+    <div class="page-header">
+        <h1>Doctors</h1>
+        <a th:href="@{/doctors/new}" sec:authorize="hasRole('ADMIN')" class="btn-primary">+ New Doctor</a>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Specialty</th>
+                <th>License</th>
+                <th>Phone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="doctor : ${doctors}">
+                <td th:text="${doctor.firstName + ' ' + doctor.lastName}"></td>
+                <td th:text="${doctor.specialty}"></td>
+                <td th:text="${doctor.licenseNumber}"></td>
+                <td th:text="${doctor.phone}"></td>
+                <td>
+                    <a th:href="@{/doctors/{id}/edit(id=${doctor.id})}" class="btn-sm">Edit</a>
+                    <form th:action="@{/doctors/{id}/delete(id=${doctor.id})}" method="post" style="display:inline"
+                          sec:authorize="hasRole('ADMIN')"
+                          onsubmit="return confirm('Delete this doctor?')">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit" class="btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

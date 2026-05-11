@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn compile *)",
+      "PowerShell(Get-Command java -ErrorAction SilentlyContinue | Select-Object Source; $env:JAVA_HOME; $env:PATH -split ';' | Where-Object { $_ -match 'java|jdk|mvn|maven' })",
+      "PowerShell(Get-ChildItem \"C:\\\\\", \"D:\\\\\", \"$env:USERPROFILE\" -Filter \"mvn.cmd\" -Recurse -Depth 6 -ErrorAction SilentlyContinue | Select-Object -First 5 FullName)",
+      "PowerShell(Get-ChildItem \"C:\\\\Program Files\\\\Microsoft Visual Studio\" -Recurse -Filter \"mvn.cmd\" -ErrorAction SilentlyContinue -Depth 5 | Select-Object -First 3 FullName; Get-ChildItem \"$env:USERPROFILE\\\\.m2\" -ErrorAction SilentlyContinue | Select-Object Name)"
+    ]
+  }
+}

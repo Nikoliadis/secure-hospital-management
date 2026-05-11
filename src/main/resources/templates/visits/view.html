@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Visit Details</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav th:replace="~{layout :: nav}"></nav>
+<div class="container">
+    <div class="page-header">
+        <h1>Visit Details</h1>
+        <a th:href="@{/visits/{id}/edit(id=${visit.id})}" class="btn-primary">Edit</a>
+    </div>
+
+    <table class="detail-table">
+        <tr><th>Date</th><td th:text="${#temporals.format(visit.visitDate,'dd/MM/yyyy HH:mm')}"></td></tr>
+        <tr><th>Patient</th><td th:text="${visit.patient.firstName + ' ' + visit.patient.lastName}"></td></tr>
+        <tr><th>Doctor</th><td th:text="${'Dr. ' + visit.doctor.firstName + ' ' + visit.doctor.lastName}"></td></tr>
+        <tr><th>Specialty</th><td th:text="${visit.doctor.specialty}"></td></tr>
+        <tr><th>Reason</th><td th:text="${visit.reason}"></td></tr>
+        <tr>
+            <th>Diagnosis</th>
+            <td>
+                <span th:if="${canSeeDiagnosis and diagnosis != null}" th:text="${diagnosis}"></span>
+                <em th:unless="${canSeeDiagnosis}" class="restricted">[Encrypted - only attending doctor and admin can view]</em>
+                <em th:if="${canSeeDiagnosis and (diagnosis == null or diagnosis.blank)}">No diagnosis recorded</em>
+            </td>
+        </tr>
+        <tr th:if="${visit.notes}"><th>Notes</th><td th:text="${visit.notes}"></td></tr>
+    </table>
+
+    <a th:href="@{/visits}" class="btn-secondary">Back to Visits</a>
+</div>
+</body>
+</html>

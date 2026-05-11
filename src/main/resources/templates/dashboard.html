@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Hospital Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{layout :: nav}"></div>
+<div class="container">
+    <h1>Dashboard</h1>
+    <p>Welcome, <strong sec:authentication="name"></strong>
+       (<span sec:authentication="authorities"></span>)</p>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Total Patients</h3>
+            <p class="stat-number" th:text="${totalPatients}">0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Doctors</h3>
+            <p class="stat-number" th:text="${totalDoctors}">0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Visits</h3>
+            <p class="stat-number" th:text="${totalVisits}">0</p>
+        </div>
+    </div>
+
+    <div th:if="${myVisits}" class="section">
+        <h2>My Recent Visits</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Patient</th>
+                    <th>Reason</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="visit : ${myVisits}">
+                    <td th:text="${#temporals.format(visit.visitDate, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${visit.patient.firstName + ' ' + visit.patient.lastName}"></td>
+                    <td th:text="${visit.reason}"></td>
+                    <td>
+                        <a th:href="@{/visits/{id}(id=${visit.id})}" class="btn-sm">View</a>
+                        <a th:href="@{/visits/{id}/edit(id=${visit.id})}" class="btn-sm">Edit</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="quick-actions">
+        <h2>Quick Actions</h2>
+        <a th:href="@{/visits/new}" sec:authorize="hasAnyRole('ADMIN','DOCTOR')" class="btn-primary">New Visit</a>
+        <a th:href="@{/patients/new}" sec:authorize="hasAnyRole('ADMIN','SECRETARIAT')" class="btn-primary">New Patient</a>
+        <a th:href="@{/patients}" sec:authorize="hasAnyRole('ADMIN','SECRETARIAT')" class="btn-secondary">View Patients</a>
+        <a th:href="@{/visits}" class="btn-secondary">View All Visits</a>
+    </div>
+</div>
+<div th:replace="~{layout :: footer}"></div>
+</body>
+</html>

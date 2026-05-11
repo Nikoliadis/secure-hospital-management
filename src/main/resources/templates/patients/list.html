@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Patients</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav th:replace="~{layout :: nav}"></nav>
+<div class="container">
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <div class="page-header">
+        <h1>Patients</h1>
+        <a th:href="@{/patients/new}" class="btn-primary">+ New Patient</a>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>AMKA</th>
+                <th>Date of Birth</th>
+                <th>Phone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="patient : ${patients}">
+                <td th:text="${patient.lastName}"></td>
+                <td th:text="${patient.firstName}"></td>
+                <td th:text="${patient.amka}"></td>
+                <td th:text="${#temporals.format(patient.dateOfBirth, 'dd/MM/yyyy')}"></td>
+                <td th:text="${patient.phone}"></td>
+                <td>
+                    <a th:href="@{/patients/{id}(id=${patient.id})}" class="btn-sm">View</a>
+                    <a th:href="@{/patients/{id}/edit(id=${patient.id})}" class="btn-sm">Edit</a>
+                    <form th:action="@{/patients/{id}/delete(id=${patient.id})}" method="post" style="display:inline"
+                          sec:authorize="hasRole('ADMIN')"
+                          onsubmit="return confirm('Delete this patient?')">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit" class="btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${patients.empty}">
+                <td colspan="6" style="text-align:center">No patients found</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

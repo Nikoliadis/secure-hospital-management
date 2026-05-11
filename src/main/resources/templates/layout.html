@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav th:fragment="nav">
+    <div class="nav-brand">Hospital Management System</div>
+    <div class="nav-links">
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/patients}" sec:authorize="hasAnyRole('ADMIN','SECRETARIAT')">Patients</a>
+        <a th:href="@{/doctors}" sec:authorize="hasAnyRole('ADMIN','SECRETARIAT')">Doctors</a>
+        <a th:href="@{/visits}">Visits</a>
+        <a th:href="@{/profile}">Profile</a>
+        &nbsp;|&nbsp; <span sec:authentication="name"></span>
+        <form th:action="@{/logout}" method="post" style="display:inline">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit" class="btn-logout">Logout</button>
+        </form>
+    </div>
+</nav>
+<div th:fragment="footer"></div>
+</body>
+</html>
