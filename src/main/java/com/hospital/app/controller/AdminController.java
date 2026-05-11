@@ -1,6 +1,7 @@
 package com.hospital.app.controller;
 
 import com.hospital.app.dto.CreateUserForm;
+import com.hospital.app.dto.EditUserForm;
 import com.hospital.app.entity.Role;
 import com.hospital.app.entity.User;
 import com.hospital.app.repository.UserRepository;
@@ -67,6 +68,41 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
+    @GetMapping("/users/{id}/edit")
+    public String editUserForm(@PathVariable Long id, Model model) {
+        User user = userService.findById(id);
+        EditUserForm form = new EditUserForm();
+        form.setEmail(user.getEmail());
+        form.setRole(user.getRole());
+        form.setEnabled(user.isEnabled());
+        model.addAttribute("form", form);
+        model.addAttribute("user", user);
+        model.addAttribute("roles", Role.values());
+        return "admin/user-edit";
+    }
+
+    @PostMapping("/users/{id}/edit")
+    public String updateUser(@PathVariable Long id,
+                             @Valid @ModelAttribute("form") EditUserForm form,
+                             BindingResult result,
+                             RedirectAttributes ra,
+                             Principal principal,
+                             Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("user", userService.findById(id));
+            model.addAttribute("roles", Role.values());
+            return "admin/user-edit";
+        }
+        User user = userService.findById(id);
+        user.setEmail(form.getEmail());
+        user.setRole(form.getRole());
+        user.setEnabled(form.isEnabled());
+        userRepository.save(user);
+        log.info("AUDIT: User {} updated by admin {}", user.getUsername(), principal.getName());
+        ra.addFlashAttribute("success", "User '" + user.getUsername() + "' updated");
+        return "redirect:/admin/users";
+    }
+
     @PostMapping("/users/{id}/toggle-lock")
     public String toggleLock(@PathVariable Long id, RedirectAttributes ra, Principal principal) {
         User user = userService.findById(id);
@@ -75,6 +111,22 @@ public class AdminController {
         String status = user.isAccountNonLocked() ? "unlocked" : "locked";
         log.info("AUDIT: User {} {} by admin {}", user.getUsername(), status, principal.getName());
         ra.addFlashAttribute("success", "User '" + user.getUsername() + "' " + status);
+        return "redirect:/admin/users";
+    }
+
+    @PostMapping("/users/{id}/reset-password")
+    public String resetPassword(@PathVariable Long id,
+                                @RequestParam String newPassword,
+                                RedirectAttributes ra,
+                                Principal principal) {
+        if (!passwordValidator.isValid(newPassword)) {
+            ra.addFlashAttribute("error", passwordValidator.getRequirements());
+            return "redirect:/admin/users/" + id + "/edit";
+        }
+        User user = userService.findById(id);
+        userService.adminResetPassword(id, newPassword);
+        log.info("AUDIT: Password reset for user {} by admin {}", user.getUsername(), principal.getName());
+        ra.addFlashAttribute("success", "Password reset for '" + user.getUsername() + "'");
         return "redirect:/admin/users";
     }
 

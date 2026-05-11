@@ -56,6 +56,17 @@ public class UserService {
     }
 
     @Transactional
+    public void adminResetPassword(Long userId, String newRaw) {
+        User user = findById(userId);
+        user.setPassword(passwordEncoder.encode(newRaw));
+        user.setLastPasswordChange(LocalDateTime.now());
+        user.setFailedLoginAttempts(0);
+        user.setAccountNonLocked(true);
+        userRepository.save(user);
+        log.info("AUDIT: Password reset by admin for userId={}", userId);
+    }
+
+    @Transactional
     public void changePassword(Long userId, String currentRaw, String newRaw) {
         User user = findById(userId);
         if (!passwordEncoder.matches(currentRaw, user.getPassword())) {
