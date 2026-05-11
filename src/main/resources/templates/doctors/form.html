@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${doctor.id != null ? 'Edit Doctor' : 'New Doctor'}">Doctor</title>
+    <th:block th:replace="~{layout :: favicon}"></th:block>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
