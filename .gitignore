@@ -25,5 +25,5 @@ logs/
 .env
 application-local.properties
 
-# Claude Code (internal tool settings - not part of project)
-.claude/
+# Local config
+.config/
